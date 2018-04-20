@@ -1,6 +1,7 @@
 from random import randint
 from math import ceil, sqrt
 from enum import Enum
+import unittest
 
 def divisors(b):
     print(b)
@@ -69,11 +70,17 @@ def tests():
     else:
         print('error')
 
-    x, y = element(1,2), element(1,3)
-    z = x + y
-    if z.a == 5 and z.b == 6:
-        print('pass')
-    else:
-        print('error')
 
-tests()
+class tests(unittest.TestCase):
+    def test_str(self):
+        x = element(1,2)
+        s = x.__str__()
+        self.assertEqual(s,'\\frac{1}{2}')
+    
+    def test_add(self):    
+        x, y = element(1,2), element(1,3)
+        z = x + y
+        self.assertEqual(z.a, 5)
+        self.assertEqual(z.b, 6)
+
+unittest.main()
