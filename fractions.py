@@ -1,5 +1,6 @@
 from math import ceil, sqrt
 from enum import Enum
+import re
 
 
 def gcd(a, b):
@@ -40,7 +41,35 @@ class Sign(Enum):
 
 
 class Element:
+
     def __init__(self, *args, **kwargs):
+        self.sign = Sign.positive
+        if len(args) == 1:
+            if type(args[0]) is str:
+                m = re.match(r'(-)?([0-9]+)/([0-9]+)', args[0])
+                if m:
+                    if m.group(1):
+                        self.sign = Sign.negative
+                    self.a, self.b = int(m.group(2)), int(m.group(3))
+                else:
+                    m = re.match(r'(-)?([0-9]+)(.)?([0-9]+)?', args[0])
+                    if m:
+                        if m.group(1):
+                            self.sign = Sign.negative
+                        if m.group(3):
+                            self.a = int(m.group(4))
+                            n = len(m.group(4))
+                            self.b = 10 ** n
+                            c = int(m.group(2))
+                            self.a += c * self.b
+                        else:
+                            self.a, self.b = int(m.group(2)), 1
+            elif type(args[0]) is int:
+                if args[0] < 0:
+                    self.sign = Sign.negative
+                self.a = abs(args[0])
+                self.b = 1
+
         if len(args) == 2:
             self.a, self.b = args
             self.sign = Sign.positive
@@ -107,6 +136,16 @@ class Element:
             return True
         else:
             return False
+
+    def __mul__(self, other):
+        sign = Sign.positive
+        if self.sign != other.sign:
+            sign = Sign.negative
+        return Element(self.a * other.a, self.b * other.b, sign)
+
+    def __truediv__(self, other):
+        other.a, other.b = other.b, other.a
+        return self * other
 
     def simplify(self):
         c = 2
