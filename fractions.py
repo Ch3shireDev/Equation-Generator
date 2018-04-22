@@ -97,11 +97,33 @@ class Element:
             else:
                 s += '%d' % (a // b)
         elif a % b != 0:
+            s += '%d/%d' % (a % b, b)
+        return s
+
+    def tex(self):
+        a, b = self.a, self.b
+        if a == 0:
+            return '0'
+        s = ''
+        if self.sign == Sign.negative:
+            s += '-'
+        if a // b != 0:
+            s += '%d' % (a // b)
+        if b == 10 or b == 100 or b == 1000:
+            if a % b > 0:
+                s += '%d.%d' % (a // b, a % b)
+            else:
+                s += '%d' % (a // b)
+        elif a % b != 0:
             s += '\\frac{%d}{%d}' % (a % b, b)
         return s
 
     def __repr__(self):
-        return self.__str__()
+        s = ''
+        if self.sign is Sign.negative:
+            s += '-'
+        s += '%d/%d' % (self.a, self.b)
+        return s
 
     def __add__(self, other):
         if self.sign == other.sign:
@@ -138,14 +160,24 @@ class Element:
             return False
 
     def __mul__(self, other):
-        sign = Sign.positive
-        if self.sign != other.sign:
-            sign = Sign.negative
-        return Element(self.a * other.a, self.b * other.b, sign)
+        if type(other) is Element:
+            sign = Sign.positive
+            if self.sign != other.sign:
+                sign = Sign.negative
+            return Element(self.a * other.a, self.b * other.b, sign)
+        elif type(other) is int:
+            a, b, sign = self.a, self.b, self.sign
+            a *= other
+            return Element(a, b, sign)
 
     def __truediv__(self, other):
-        other.a, other.b = other.b, other.a
-        return self * other
+        if type(other) is Element:
+            other.a, other.b = other.b, other.a
+            return self * other
+        elif type(other) is int:
+            a, b, sign = self.a, self.b, self.sign
+            b *= other
+            return Element(a, b, sign)
 
     def simplify(self):
         c = 2
