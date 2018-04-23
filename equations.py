@@ -73,20 +73,26 @@ class Equation:
     def __str__(self):
         return self.show()
 
-    def show(self, tab=None):
+    def show(self, tab=None, usetex=False):
         if tab is None:
             tab = self.tab
         if type(tab) is Element:
-            return str(tab)
+            if usetex:
+                return tab.tex()
+            else:
+                return str(tab)
         else:
             if len(tab) == 0:
                 return ''
             elif len(tab) == 1:
-                return self.show(tab[0])
+                return self.show(tab[0], usetex)
             elif len(tab) == 2:
-                return tab[1] + self.show(tab[0])
+                return tab[1] + self.show(tab[0], usetex)
             else:
-                s = self.show(tab[0]) + ' ' + tab[2] + ' ' + self.show(tab[1])
+                s = self.show(tab[0], usetex) + ' ' + tab[2] + ' ' + self.show(tab[1], usetex)
                 if tab[2] == '-' and tab is not self.tab[0]:
                     s = '(%s)' % s
                 return s
+
+    def tex(self):
+        return self.show(None, True)
