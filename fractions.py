@@ -41,7 +41,7 @@ class Sign(Enum):
 
 class Element:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args):
         self.sign = Sign.positive
         if len(args) == 1:
             if type(args[0]) is str:
@@ -151,14 +151,9 @@ class Element:
     def __eq__(self, other):
         if self.a == 0 and other.a == 0:
             return True
-
         e1 = self.simplify()
         e2 = other.simplify()
-
-        if e1.a == e2.a and e1.b == e2.b and e1.sign == e2.sign:
-            return True
-        else:
-            return False
+        return e1.a == e2.a and e1.b == e2.b and e1.sign == e2.sign
 
     def __mul__(self, other):
         if type(other) is Element:

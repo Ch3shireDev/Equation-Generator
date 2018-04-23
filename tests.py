@@ -68,12 +68,22 @@ class Test(unittest.TestCase):
 
     def test_negation(self):
         e = Equation()
+        e.create_negation(-1)
+        self.assertEqual(str(e), '-(-1)')
+        e = Equation()
         x = e.element(-1)
         e.create_sub(-1, x / 2)
         e.create_negation(-1)
-        self.assertEqual(str(e), '1 1/2 - (-1/2)')
+        self.assertEqual(str(e), '1 1/2 + (-1/2)')
         e.create_negation(-1)
         self.assertEqual(str(e), '1 1/2 - (-(-1/2))')
+
+    def test_negative(self):
+        e = Equation(-1)
+        self.assertEqual(str(e), '-1')
+        e = Equation(-1)
+        e.create_negation(-1)
+        self.assertEqual(str(e), '-(-(-1))')
 
 
 if __name__ == '__main__':

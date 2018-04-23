@@ -4,7 +4,9 @@ from fractions import Element
 class Equation:
 
     def __init__(self, out=1):
-        self.tab = [Element(out)]
+        self.tab = [Element(abs(out))]
+        if out < 0:
+            self.tab += ['-']
 
     def __len__(self):
         return len(self.indices())
@@ -16,37 +18,53 @@ class Equation:
             e = e[i]
         return e
 
-    def create_sum(self, index, e2):
+    def get_triple(self, index):
         e = self.tab
         args = self.indices()[index]
         for i in range(len(args) - 1):
             index = args[i]
             e = e[index]
         index = args[-1]
-        e0 = e[index]
+        return e, index, e[index]
+
+    def create_sum(self, index, e2):
+        e, index, e0 = self.get_triple(index)
         e1 = e0 - e2
         e[index] = [e1.simplify(), e2.simplify(), '+']
 
     def create_sub(self, index, e2):
-        e = self.tab
-        args = self.indices()[index]
-        for i in range(len(args) - 1):
-            index = args[i]
-            e = e[index]
-        index = args[-1]
-        e0 = e[index]
+        e, index, e0 = self.get_triple(index)
         e1 = e0 + e2
         e[index] = [e1.simplify(), e2.simplify(), '-']
 
     def create_negation(self, index):
-        e = self.tab
-        args = self.indices()[index]
-        for i in range(len(args) - 1):
-            index = args[i]
-            e = e[index]
-        index = args[-1]
-        e0 = e[index]
-        e[index] = [e0.simplify(), '-']
+        e, i, e0 = self.get_triple(index)
+        e[i] = [e0.simplify(), '-']
+        if len(e) == 3:
+            if e[-1] == '-':
+                e[-1] = '+'
+            elif e[-1] == '+':
+                e[-1] = '-'
+        elif len(e) == 2:
+            if e is self.tab:
+                e[i] = [e[i], '-']
+                pass
+            else:
+                args = self.indices()[index]
+                e = self.tab
+                while len(e) != 3 and len(args) > 1:
+                    args = args[:-1]
+                    e = self.tab
+                    for a in args:
+                        e = e[a]
+                if e[-1] == '+':
+                    e[-1] = '-'
+        elif len(e) == 1:
+            e, i, e0 = self.get_triple(index)
+            e[i] = [e0.simplify(), '-']
+
+    def create_multiplication(self, index, e2):
+        pass
 
     def levels(self, tab=None, i=0):
         if tab is None:
@@ -81,7 +99,11 @@ class Equation:
             return ' ' + e[-1] + ' '
 
     def __str__(self):
-        return self.show()
+        s = self.show()
+        if len(s) > 0 and s[0] == '(' and s[-1] == ')':
+            return s[1:-1]
+        else:
+            return self.show()
 
     def show(self, tab=None, usetex=False):
         if tab is None:
