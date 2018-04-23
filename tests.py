@@ -66,6 +66,15 @@ class Test(unittest.TestCase):
         e.create_sub(-1, x / 2)
         self.assertEqual(str(e), '1 1/2 - (3/4 - (3/8 - 1/8))')
 
+    def test_negation(self):
+        e = Equation()
+        x = e.element(-1)
+        e.create_sub(-1, x / 2)
+        e.create_negation(-1)
+        self.assertEqual(str(e), '1 1/2 - (-1/2)')
+        e.create_negation(-1)
+        self.assertEqual(str(e), '1 1/2 - (-(-1/2))')
+
 
 if __name__ == '__main__':
     unittest.main()

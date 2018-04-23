@@ -38,6 +38,16 @@ class Equation:
         e1 = e0 + e2
         e[index] = [e1.simplify(), e2.simplify(), '-']
 
+    def create_negation(self, index):
+        e = self.tab
+        args = self.indices()[index]
+        for i in range(len(args) - 1):
+            index = args[i]
+            e = e[index]
+        index = args[-1]
+        e0 = e[index]
+        e[index] = [e0.simplify(), '-']
+
     def levels(self, tab=None, i=0):
         if tab is None:
             tab = self.tab
@@ -87,7 +97,8 @@ class Equation:
             elif len(tab) == 1:
                 return self.show(tab[0], usetex)
             elif len(tab) == 2:
-                return tab[1] + self.show(tab[0], usetex)
+                if tab[1] == '-':
+                    return '(%s)' % (tab[1] + self.show(tab[0], usetex))
             else:
                 s = self.show(tab[0], usetex) + ' ' + tab[2] + ' ' + self.show(tab[1], usetex)
                 if tab[2] == '-' and tab is not self.tab[0]:
