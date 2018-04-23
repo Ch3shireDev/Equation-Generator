@@ -7,10 +7,10 @@ class Equation:
         self.tab = [Element(out)]
 
     def __len__(self):
-        return len(self.getIndices())
+        return len(self.indices())
 
-    def getElement(self, index):
-        args = self.getIndices()[index]
+    def element(self, index):
+        args = self.indices()[index]
         e = self.tab
         for i in args:
             e = e[i]
@@ -18,7 +18,7 @@ class Equation:
 
     def create_sum(self, index, e2):
         e = self.tab
-        args = self.getIndices()[index]
+        args = self.indices()[index]
         for i in range(len(args) - 1):
             index = args[i]
             e = e[index]
@@ -27,10 +27,20 @@ class Equation:
         e1 = e0 - e2
         e[index] = [e1.simplify(), e2.simplify(), '+']
 
-    def getLevels(self):
-        return self.levels(self.tab)
+    def create_sub(self, index, e2):
+        e = self.tab
+        args = self.indices()[index]
+        for i in range(len(args) - 1):
+            index = args[i]
+            e = e[index]
+        index = args[-1]
+        e0 = e[index]
+        e1 = e0 + e2
+        e[index] = [e1.simplify(), e2.simplify(), '-']
 
-    def levels(self, tab, i=0):
+    def levels(self, tab=None, i=0):
+        if tab is None:
+            tab = self.tab
         out = []
         if type(tab) is Element:
             return [i]
@@ -39,10 +49,9 @@ class Equation:
                 out += self.levels(e, i + 1)
         return out
 
-    def getIndices(self):
-        return self.indices(self.tab)
-
-    def indices(self, tab, x=[]):
+    def indices(self, tab=None, x=[]):
+        if tab is None:
+            tab = self.tab
         out = []
         for i in range(len(tab)):
             if type(tab[i]) is Element:
@@ -51,8 +60,8 @@ class Equation:
                 out += self.indices(tab[i], x + [i])
         return out
 
-    def getOperator(self, index):
-        tab = self.getIndices()[index]
+    def operator(self, index):
+        tab = self.indices()[index]
         e = self.tab
         for i in range(len(tab) - 1):
             e = e[tab[i]]
@@ -62,14 +71,22 @@ class Equation:
             return ' ' + e[-1] + ' '
 
     def __str__(self):
-        tab = self.getIndices()
-        s = ''
-        i = 0
-        for indices in tab:
-            print(i, indices)
-            s += str(self.getElement(i))
-            if indices[-1] == 0:
-                s += self.getOperator(i)
-            i += 1
+        return self.show()
 
-        return s
+    def show(self, tab=None):
+        if tab is None:
+            tab = self.tab
+        if type(tab) is Element:
+            return str(tab)
+        else:
+            if len(tab) == 0:
+                return ''
+            elif len(tab) == 1:
+                return self.show(tab[0])
+            elif len(tab) == 2:
+                return tab[1] + self.show(tab[0])
+            else:
+                s = self.show(tab[0]) + ' ' + tab[2] + ' ' + self.show(tab[1])
+                if tab[2] == '-' and tab is not self.tab[0]:
+                    s = '(%s)' % s
+                return s

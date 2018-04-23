@@ -13,7 +13,6 @@ def gcd(a, b):
 
 
 def divisors(b):
-    print(b)
     b = abs(b)
     if b < 2:
         return [1]
@@ -97,6 +96,8 @@ class Element:
             else:
                 s += '%d' % (a // b)
         elif a % b != 0:
+            if (a // b) != 0:
+                s += ' '
             s += '%d/%d' % (a % b, b)
         return s
 

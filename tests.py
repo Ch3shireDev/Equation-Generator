@@ -6,7 +6,7 @@ import unittest
 class Test(unittest.TestCase):
     def test_str(self):
         x = Element(1, 2)
-        s = x.__str__()
+        s = str(x)
         self.assertEqual(s, '1/2')
 
     def test_add(self):
@@ -46,13 +46,25 @@ class Test(unittest.TestCase):
     def test_division(self):
         self.assertEqual(Element('2/3') / Element('5/7'), Element('14/15'))
 
-    def test_equation(self):
-        e = Equation(1)
+    def test_sum_equation(self):
+        e = Equation()
         for i in range(5):
-            x = e.getElement(-1)
+            x = e.element(-1)
             e.create_sum(-1, x / 2)
         s = str(e)
         self.assertEqual(s, '1/2 + 1/4 + 1/8 + 1/16 + 1/32 + 1/32')
+
+    def test_sub_equation(self):
+        e = Equation()
+        x = e.element(-1)
+        e.create_sub(-1, x / 2)
+        self.assertEqual(str(e), '1 1/2 - 1/2')
+        x = e.element(-1)
+        e.create_sub(-1, x / 2)
+        self.assertEqual(str(e), '1 1/2 - (3/4 - 1/4)')
+        x = e.element(-1)
+        e.create_sub(-1, x / 2)
+        self.assertEqual(str(e), '1 1/2 - (3/4 - (3/8 - 1/8))')
 
 
 if __name__ == '__main__':
