@@ -1,13 +1,11 @@
 from fractions import Element
 from equations import Equation
 
-e = Equation(1)
-e.create_multiplication(-1, Element(1, 2))
 
-x = Element(1,1)
-y = Element(2,1)
-
-print(x*y)
-print(x/y)
-
+e = Equation()
+x = e.element(-1)
+e.create_sub(-1, x / 2)
+e.create_negation(-1)
+e.create_negation(-1)
 print(e)
+print(e.tab)

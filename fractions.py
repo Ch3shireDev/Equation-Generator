@@ -168,8 +168,8 @@ class Element:
 
     def __truediv__(self, other):
         if type(other) is Element:
-            other.a, other.b = other.b, other.a
-            return self * other
+            c = Element(other.b, other.a, other.sign)
+            return self * c
         elif type(other) is int:
             a, b, sign = self.a, self.b, self.sign
             b *= other

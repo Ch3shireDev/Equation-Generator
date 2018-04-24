@@ -1,4 +1,4 @@
-from fractions import Element
+from fractions import Element, Sign
 
 
 class Equation:
@@ -48,7 +48,6 @@ class Equation:
         elif len(e) == 2:
             if e is self.tab:
                 e[i] = [e[i], '-']
-                pass
             else:
                 args = self.indices()[index]
                 e = self.tab
@@ -66,9 +65,11 @@ class Equation:
     def create_multiplication(self, index, e2):
         e, i, e0 = self.get_triple(index)
         e1 = e0 / e2
-        print('e:', e0, e2, e1)
+        if e1.sign is Sign.negative:
+            e1 = [-e1, '-']
+        if e2.sign is Sign.negative:
+            e2 = [-e2, '-']
         e[i] = [e1, e2, '*']
-
 
     def levels(self, tab=None, i=0):
         if tab is None:
@@ -103,14 +104,12 @@ class Equation:
             return ' ' + e[-1] + ' '
 
     def __str__(self):
-        s = self.show()
-        if len(s) > 0 and s[0] == '(' and s[-1] == ')':
-            return s[1:-1]
-        else:
-            return self.show()
+        return self.show()
 
     def show(self, tab=None, usetex=False):
         if tab is None:
+            if len(self.tab) == 1 and type(self.tab) is list:
+                self.tab = self.tab[0]
             tab = self.tab
         if type(tab) is Element:
             if usetex:
@@ -124,10 +123,13 @@ class Equation:
                 return self.show(tab[0], usetex)
             elif len(tab) == 2:
                 if tab[1] == '-':
-                    return '(%s)' % (tab[1] + self.show(tab[0], usetex))
+                    if tab is self.tab:
+                        return '%s' % (tab[1] + self.show(tab[0], usetex))
+                    else:
+                        return '(%s)' % (tab[1] + self.show(tab[0], usetex))
             else:
                 s = self.show(tab[0], usetex) + ' ' + tab[2] + ' ' + self.show(tab[1], usetex)
-                if tab[2] == '-' and tab is not self.tab[0]:
+                if tab[2] == '-' and tab is not self.tab:
                     s = '(%s)' % s
                 return s
 

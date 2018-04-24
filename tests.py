@@ -66,10 +66,8 @@ class Test(unittest.TestCase):
         e.create_sub(-1, x / 2)
         self.assertEqual(str(e), '1 1/2 - (3/4 - (3/8 - 1/8))')
 
+
     def test_negation(self):
-        e = Equation()
-        e.create_negation(-1)
-        self.assertEqual(str(e), '-(-1)')
         e = Equation()
         x = e.element(-1)
         e.create_sub(-1, x / 2)
@@ -81,6 +79,9 @@ class Test(unittest.TestCase):
     def test_negative(self):
         e = Equation(-1)
         self.assertEqual(str(e), '-1')
+        e = Equation()
+        e.create_negation(-1)
+        self.assertEqual(str(e), '-(-1)')
         e = Equation(-1)
         e.create_negation(-1)
         self.assertEqual(str(e), '-(-(-1))')
@@ -89,8 +90,31 @@ class Test(unittest.TestCase):
         e0, e1 = Element(1), Element(2)
         self.assertEqual(e1.a, 2)
         self.assertEqual(e1.b, 1)
-        e2 = 1/e1
-        print(e2)
+        e2 = e0 / e1
+        self.assertEqual(e2, Element(1, 2))
+        e0, e1 = Element(-1), Element(2)
+        e2 = e0 / e1
+        self.assertEqual(e2, -Element(1, 2))
+        e0, e1 = Element('2/3'), Element('4/3')
+        self.assertEqual(e0 / e1, Element('1/2'))
+
+        e0, e2 = Element(1), Element('1/2')
+        e1 = e0 / e2
+        self.assertEqual(e1, Element(2))
+
+        e0, e2 = Element(1), Element(2)
+        self.assertEqual(e2, Element(2))
+        e0 / e2
+        self.assertEqual(e2, Element(2))
+
+    def test_multiplication(self):
+        e = Equation()
+        e.create_multiplication(-1, Element(2))
+        self.assertEqual(str(e), '1/2 * 2')
+
+        e = Equation()
+        e.create_multiplication(-1, Element(-2))
+        self.assertEqual(str(e), '(-1/2) * (-2)')
 
 
 if __name__ == '__main__':
