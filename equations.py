@@ -64,7 +64,11 @@ class Equation:
             e[i] = [e0.simplify(), '-']
 
     def create_multiplication(self, index, e2):
-        pass
+        e, i, e0 = self.get_triple(index)
+        e1 = e0 / e2
+        print('e:', e0, e2, e1)
+        e[i] = [e1, e2, '*']
+
 
     def levels(self, tab=None, i=0):
         if tab is None:

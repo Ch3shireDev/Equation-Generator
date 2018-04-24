@@ -85,6 +85,13 @@ class Test(unittest.TestCase):
         e.create_negation(-1)
         self.assertEqual(str(e), '-(-(-1))')
 
+    def test_operations(self):
+        e0, e1 = Element(1), Element(2)
+        self.assertEqual(e1.a, 2)
+        self.assertEqual(e1.b, 1)
+        e2 = 1/e1
+        print(e2)
+
 
 if __name__ == '__main__':
     unittest.main()
