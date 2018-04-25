@@ -66,7 +66,6 @@ class Test(unittest.TestCase):
         e.create_sub(-1, x / 2)
         self.assertEqual(str(e), '1 1/2 - (3/4 - (3/8 - 1/8))')
 
-
     def test_negation(self):
         e = Equation()
         x = e.element(-1)
@@ -111,10 +110,26 @@ class Test(unittest.TestCase):
         e = Equation()
         e.create_multiplication(-1, Element(2))
         self.assertEqual(str(e), '1/2 * 2')
-
         e = Equation()
         e.create_multiplication(-1, Element(-2))
         self.assertEqual(str(e), '(-1/2) * (-2)')
+        e = Equation(1)
+        e.create_multiplication(-1, Element(3, 2))
+        self.assertEqual(str(e), '2/3 * 1 1/2')
+        e = Equation(1)
+        e.create_multiplication(-1, Element('-3/2'))
+        self.assertEqual(str(e), '(-2/3) * (-1 1/2)')
+
+    def test_division(self):
+        e = Equation()
+        e.create_division(-1, Element('1/2'))
+        self.assertEqual(str(e), '1/2 : 1/2')
+        e = Equation(Element('2/3'))
+        e.create_division(-1, Element('1/2'))
+        self.assertEqual(str(e), '1/3 : 1/2')
+        e = Equation(Element('5/3'))
+        e.create_division(-1, Element(2))
+        self.assertEqual(str(e), '3 1/3 : 2')
 
 
 if __name__ == '__main__':

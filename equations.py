@@ -4,9 +4,12 @@ from fractions import Element, Sign
 class Equation:
 
     def __init__(self, out=1):
-        self.tab = [Element(abs(out))]
-        if out < 0:
-            self.tab += ['-']
+        if type(out) is Element:
+            self.tab = [out]
+        else:
+            self.tab = [Element(abs(out))]
+            if out < 0:
+                self.tab += ['-']
 
     def __len__(self):
         return len(self.indices())
@@ -71,6 +74,16 @@ class Equation:
             e2 = [-e2, '-']
         e[i] = [e1, e2, '*']
 
+    def create_division(self, index, e2):
+        e, i, e0 = self.get_triple(index)
+        e1 = e0 * e2
+        e1, e2 = e1.simplify(), e2.simplify()
+        if e1.sign is Sign.negative:
+            e1 = [-e1, '-']
+        if e2.sign is Sign.negative:
+            e2 = [-e2, '-']
+        e[i] = [e1, e2, ':']
+
     def levels(self, tab=None, i=0):
         if tab is None:
             tab = self.tab
@@ -95,7 +108,7 @@ class Equation:
 
     def operator(self, index):
         tab = self.indices()[index]
-        e = self.tab
+        e = self.tabo
         for i in range(len(tab) - 1):
             e = e[tab[i]]
         if tab[-1] == 1:
