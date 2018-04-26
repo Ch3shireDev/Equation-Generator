@@ -131,6 +131,12 @@ class Test(unittest.TestCase):
         e.create_division(-1, Element(2))
         self.assertEqual(str(e), '3 1/3 : 2')
 
+    def test_complication(self):
+        e = Equation(1)
+        for m, n, x, y in [[0, 4, 1, 5], [1, 3, 1, 5], [1, 2, 1, 4]]:
+            e.complicate(m, n, x, y)
+        self.assertEqual(str(e), '1/5 : ((-1) * 1/5)')
+
 
 if __name__ == '__main__':
     unittest.main()

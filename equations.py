@@ -14,6 +14,19 @@ class Equation:
     def __len__(self):
         return len(self.indices())
 
+    def complicate(self, m, n, x, y):
+        z = Element(x, y)
+        if n == 0:
+            self.create_sum(m, z)
+        elif n == 1:
+            self.create_sub(m, z)
+        elif n == 2:
+            self.create_negation(m)
+        elif n == 3:
+            self.create_multiplication(m, z)
+        elif n == 4:
+            self.create_division(m, z)
+
     def element(self, index):
         args = self.indices()[index]
         e = self.tab
@@ -144,6 +157,9 @@ class Equation:
                 s = self.show(tab[0], usetex) + ' ' + tab[2] + ' ' + self.show(tab[1], usetex)
                 if tab[2] == '-' and tab is not self.tab:
                     s = '(%s)' % s
+                if tab[2] == ':' and len(tab[1]) > 1:
+                    s = self.show(tab[0], usetex) + ' ' + tab[2] + ' (' + self.show(tab[1], usetex) + ')'
+
                 return s
 
     def tex(self):

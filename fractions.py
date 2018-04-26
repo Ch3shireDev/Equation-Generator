@@ -101,6 +101,9 @@ class Element:
             s += '%d/%d' % (a % b, b)
         return s
 
+    def __len__(self):
+        return 1
+
     def tex(self):
         a, b = self.a, self.b
         if a == 0:
