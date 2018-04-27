@@ -136,7 +136,25 @@ class Test(unittest.TestCase):
         for m, n, x, y in [[0, 4, 1, 5], [1, 3, 1, 5], [1, 2, 1, 4]]:
             e.complicate(m, n, x, y)
         self.assertEqual(str(e), '1/5 : ((-1) * 1/5)')
+        e = Equation(1)
+        tab = [
+            [0, 3, 1, 5],
+            [1, 0, 1, 9],
+            [0, 4, 1, 6],
+            [1, 0, 1, 2],
+            [0, 1, 1, 9],
+            [5, 0, 1, 5],
+            [3, 3, 1, 9],
+            [1, 0, 1, 3]
+        ]
+        for m, n, x, y in tab:
+            e.complicate(m, n, x, y)
 
-
+        e.tab = e.tab[0][0]
+        e.tab[1] = Element(1)
+        self.assertEqual(str(e), '17/18 - (-2/9 + 1/3) : 1')
+        self.assertEqual(str(e), '17/18 - (-2/9 + 1/3)')
+        e.tab = e.tab[0]
+        print(e)
 if __name__ == '__main__':
     unittest.main()

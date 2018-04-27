@@ -155,11 +155,11 @@ class Equation:
                         return '(%s)' % (tab[1] + self.show(tab[0], usetex))
             else:
                 s = self.show(tab[0], usetex) + ' ' + tab[2] + ' ' + self.show(tab[1], usetex)
-                if tab[2] == '-' and tab is not self.tab:
-                    s = '(%s)' % s
-                if tab[2] == ':' and len(tab[1]) > 1:
-                    s = self.show(tab[0], usetex) + ' ' + tab[2] + ' (' + self.show(tab[1], usetex) + ')'
 
+                if tab[2] != '+' and len(tab[1]) == 3:
+                    s = self.show(tab[0], usetex) + ' ' + tab[2] + ' (' + self.show(tab[1], usetex) + ')'
+                elif tab[2] == ':' and len(tab[1]) > 1:
+                    s = self.show(tab[0], usetex) + ' ' + tab[2] + ' (' + self.show(tab[1], usetex) + ')'
                 return s
 
     def tex(self):

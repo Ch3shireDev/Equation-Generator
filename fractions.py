@@ -151,13 +151,6 @@ class Element:
     def __sub__(self, other):
         return self + (-other)
 
-    def __eq__(self, other):
-        if self.a == 0 and other.a == 0:
-            return True
-        e1 = self.simplify()
-        e2 = other.simplify()
-        return e1.a == e2.a and e1.b == e2.b and e1.sign == e2.sign
-
     def __mul__(self, other):
         if type(other) is Element:
             sign = Sign.positive
@@ -186,3 +179,39 @@ class Element:
             a //= c
             b //= c
         return Element(a, b, self.sign)
+
+    def __lt__(self, other):
+        if type(other) is Element:
+            pass
+            pass
+        else:
+            c = other
+            a = self.a
+            if self.sign is Sign.negative:
+                a = -a
+            c *= self.b
+            return a < c
+
+    def __eq__(self, other):
+        if type(other) is Element:
+            if self.a == 0 and other.a == 0:
+                return True
+            e1 = self.simplify()
+            e2 = other.simplify()
+            return e1.a == e2.a and e1.b == e2.b and e1.sign == e2.sign
+        else:
+            c = other
+            a = self.a
+            if self.sign is Sign.negative:
+                a = -a
+            c *= self.b
+            return a == c
+
+    def __le__(self, other):
+        return self < other or self == other
+
+    def __gt__(self, other):
+        return not (self < other)
+
+    def __ge__(self, other):
+        return self > other or self == other
