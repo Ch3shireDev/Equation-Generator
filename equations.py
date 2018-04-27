@@ -121,7 +121,7 @@ class Equation:
 
     def operator(self, index):
         tab = self.indices()[index]
-        e = self.tabo
+        e = self.tab
         for i in range(len(tab) - 1):
             e = e[tab[i]]
         if tab[-1] == 1:
@@ -154,7 +154,12 @@ class Equation:
                     else:
                         return '(%s)' % (tab[1] + self.show(tab[0], usetex))
             else:
-                s = self.show(tab[0], usetex) + ' ' + tab[2] + ' ' + self.show(tab[1], usetex)
+                s = self.show(tab[0], usetex) + ' '
+                if tab[2] is '*' and usetex:
+                    s += '\\cdot'
+                else:
+                    s += tab[2]
+                s += ' ' + self.show(tab[1], usetex)
 
                 if tab[2] != '+' and len(tab[1]) == 3:
                     s = self.show(tab[0], usetex) + ' ' + tab[2] + ' (' + self.show(tab[1], usetex) + ')'
@@ -163,4 +168,41 @@ class Equation:
                 return s
 
     def tex(self):
-        return self.show(None, True)
+        s = self.show(None, True)
+        s = texify_brackets(s)
+        return s
+
+
+def texify_brackets(s):
+    tab = []
+    n = 0
+    for x in s:
+        if x in '()':
+            if x is '(':
+                n += 1
+                tab += [n]
+            else:
+                tab += [n]
+                n -= 1
+    m = max(tab)
+    s2 = ''
+    n = 0
+    for x in s:
+        if x in '()':
+            if x is '(':
+                n += 1
+                s2 += create_bracket(m, n, x)
+            else:
+                s2 += create_bracket(m, n, x)
+                n -= 1
+        else:
+            s2 += x
+    return s2
+
+
+def create_bracket(maximum, n, bracket):
+    markups = ['\\big', '\\Big', '\\bigg', '\\Bigg']
+    x = maximum - n
+    if x >= len(markups):
+        x = len(markups) - 1
+    return markups[x] + bracket

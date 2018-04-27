@@ -156,5 +156,7 @@ class Test(unittest.TestCase):
         self.assertEqual(str(e), '17/18 - (-2/9 + 1/3)')
         e.tab = e.tab[0]
         print(e)
+
+
 if __name__ == '__main__':
     unittest.main()
