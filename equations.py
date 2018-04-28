@@ -155,10 +155,7 @@ class Equation:
                         return '(%s)' % (tab[1] + self.show(tab[0], usetex))
             else:
                 s = self.show(tab[0], usetex) + ' '
-                if tab[2] is '*' and usetex:
-                    s += '\\cdot'
-                else:
-                    s += tab[2]
+                s += tab[2]
                 s += ' ' + self.show(tab[1], usetex)
 
                 if tab[2] != '+' and len(tab[1]) == 3:
@@ -169,8 +166,19 @@ class Equation:
 
     def tex(self):
         s = self.show(None, True)
-        s = texify_brackets(s)
+        s = texify(s)
         return s
+
+def texify(s):
+    s2 = ''
+    for x in s:
+        if x == '*':
+            s2 += r'\cdot'
+        else:
+            s2 += x
+    s = s2
+    s = texify_brackets(s)
+    return s
 
 
 def texify_brackets(s):
@@ -184,7 +192,10 @@ def texify_brackets(s):
             else:
                 tab += [n]
                 n -= 1
-    m = max(tab)
+    if len(tab) > 0:
+        m = max(tab)
+    else:
+        return s
     s2 = ''
     n = 0
     for x in s:
